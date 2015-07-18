@@ -24,10 +24,9 @@ function! s:functions.projectRoot() abort
     endif
 endfunction
 
-"Return all the import paths DCD knows about, plus the ones in
-"g:dutyl_stdImportPaths
-function! s:functions.importPaths() dict abort
+function! s:updateCache(self) abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
+    let l:resultStringPath = []
 
     let l:definingFiles = dutyl#util#globInParentDirectories(s:DEFINING_FILES)
     let l:definingFilesModificationTime = {}
@@ -35,9 +34,9 @@ function! s:functions.importPaths() dict abort
         let l:definingFilesModificationTime[l:file] = getftime(l:file)
     endfor
 
-    if has_key(self.cache.dub, 'definingFilesModificationTime')
-        if self.cache.dub.definingFilesModificationTime == l:definingFilesModificationTime
-            return self.cache.dub.importPaths
+    if has_key(a:self.cache.dub, 'definingFilesModificationTime')
+        if a:self.cache.dub.definingFilesModificationTime == l:definingFilesModificationTime
+            return
         endif
     endif
 
@@ -53,10 +52,33 @@ function! s:functions.importPaths() dict abort
                 endif
             endif
         endfor
+        for l:importPath in l:package.stringImportPaths
+            if dutyl#util#isPathAbsolute(l:importPath)
+                call add(l:resultStringPath,l:importPath)
+            else
+                let l:absoluteImportPath=globpath(l:package.path,l:importPath,1)
+                if !empty(l:absoluteImportPath)
+                    call add(l:resultStringPath,l:absoluteImportPath)
+                endif
+            endif
+        endfor
     endfor
 
-    let self.cache.dub.importPaths = dutyl#util#normalizePaths(l:result)
-    let self.cache.dub.definingFilesModificationTime = l:definingFilesModificationTime
+    let a:self.cache.dub.importPaths = dutyl#util#normalizePaths(l:result)
+    let a:self.cache.dub.stringImportPaths = dutyl#util#normalizePaths(l:resultStringPath)
+    let a:self.cache.dub.definingFilesModificationTime = l:definingFilesModificationTime
+endfunction
+
+"Return all string import paths
+function! s:functions.stringImportPaths() dict abort
+    call s:updateCache(self)
+    return self.cache.dub.stringImportPaths
+endfunction
+
+"Return all the import paths DCD knows about, plus the ones in
+"g:dutyl_stdImportPaths
+function! s:functions.importPaths() dict abort
+    call s:updateCache(self)
     return self.cache.dub.importPaths
 endfunction
 
