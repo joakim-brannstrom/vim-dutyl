@@ -26,3 +26,8 @@ call dutyl#register#module('dcd','dutyl#dcd#new',20)
 call dutyl#register#module('dfmt','dutyl#dfmt#new',30)
 call dutyl#register#module('dscanner','dutyl#dscanner#new',60)
 call dutyl#register#module('configFile','dutyl#configFile#new',100)
+
+augroup dutyl_syntastic
+    autocmd!
+    autocmd User Syntastic_d_pre_DMD call dutyl#syntastic#updateSyntasticDMDPath()
+augroup END
