@@ -20,6 +20,7 @@ Currently supported features:
 * Recognizing the project's root and running commands there
 * Formatting code using dfmt
 * Indenting using dfmt
+* Compiler errors via integration with the Vim plugin syntastic
 
 
 REQUIREMENTS
@@ -31,7 +32,9 @@ it to use DCD for autocompletion, you need
 [DCD](https://github.com/Hackerpilot/DCD)(currently tested with version 0.4.0).
 If you want it to use Dscanner, you need
 [Dscanner](https://github.com/Hackerpilot/Dscanner). If you want it to use
-dfmt, you need [dfmt](https://github.com/Hackerpilot/dfmt).
+dfmt, you need [dfmt](https://github.com/Hackerpilot/dfmt).  If you want it to
+display compiler errors you need
+[syntastic](https://github.com/scrooloose/syntastic).
 
 
 NOTE ABOUT DCD
@@ -82,13 +85,21 @@ ran. To prevent using VimProc, set `g:dutyl_dontUseVimProc` to 1:
 let g:dutyl_dontUseVimProc=1
 ```
 
-Dutyl will use a local file named "tags" for tags. If you want to everride
+Dutyl will use a local file named "tags" for tags. If you want to override
 this, set `g:dutyl_tagsFileName` to the name of the new tags file:
 ```vim
 let g:dutyl_tagsFileName='newnamefortagsfile'
 ```
 Note that the new tags file name will still have to be in `tags` in order
 for Vim to recognize it.
+
+Dutyl's integration with the vim plugin Syntastic passes on compiler flags by
+setting the syntastic global `g:syntastic_d_dmd_post_args`.
+To configure dutyl to not process events from Syntastic set
+`g:dutyl_disableSyntasticEvent` to 1:
+```vim
+let g:dutyl_disableSyntasticEvent=1
+```
 
 ## Contributing
 
