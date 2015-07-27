@@ -1,11 +1,3 @@
-function! dutyl#syntastic#new() abort
-    let l:result={}
-    let l:result=extend(l:result,s:functions)
-    return l:result
-endfunction
-
-let s:functions={}
-
 function! dutyl#syntastic#updateSyntasticDMDPath() abort
     " Allows the user to toggle activation of event processing in runtime.
     if exists('g:dutyl_disableSyntasticEvent')
