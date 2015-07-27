@@ -26,3 +26,16 @@ function! dutyl#syntastic#updateSyntasticDMDPath() abort
 
     let g:syntastic_d_dmd_post_args = l:dmdFlags
 endfunction
+
+function! dutyl#syntastic#updateSyntasticDMDcovPath() abort
+    " Coverage checker is not part of default checkers in syntastic.
+    " User has to manually activate it. Therefore no variable is needed to
+    " turn it off in runtime.
+
+    try
+        let l:dutyl = dutyl#core#requireFunctions('projectRoot')
+        let g:syntastic_d_dmdcov_root = l:dutyl.projectRoot()
+    catch "Fallback
+        unlet g:syntastic_d_dmdcov_root
+    endtry
+endfunction

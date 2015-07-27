@@ -30,4 +30,5 @@ call dutyl#register#module('configFile','dutyl#configFile#new',100)
 augroup dutyl_syntastic
     autocmd!
     autocmd User Syntastic_d_pre_DMD call dutyl#syntastic#updateSyntasticDMDPath()
+    autocmd User Syntastic_d_pre_DMDcov call dutyl#syntastic#updateSyntasticDMDcovPath()
 augroup END
