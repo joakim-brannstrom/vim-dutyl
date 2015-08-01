@@ -28,14 +28,25 @@ function! dutyl#syntastic#updateSyntasticDMDPath() abort
 endfunction
 
 function! dutyl#syntastic#updateSyntasticDMDcovPath() abort
+    " Allows the user to toggle activation of event processing in runtime.
+    if exists('g:dutyl_disableSyntasticCoverageEvent')
+        return
+    endif
+
+
     " Coverage checker is not part of default checkers in syntastic.
     " User has to manually activate it. Therefore no variable is needed to
     " turn it off in runtime.
-
     try
         let l:dutyl = dutyl#core#requireFunctions('projectRoot')
-        let g:syntastic_d_dmdcov_root = l:dutyl.projectRoot()
+        let l:projRoot = l:dutyl.projectRoot()
+        if l:projRoot != ''
+            let g:syntastic_d_dmdcov_cwd = l:projRoot
+            let g:syntastic_d_dmdcov_external_configure = 1
+        else
+            let g:syntastic_d_dmdcov_external_configure = 0
+        endif
     catch "Fallback
-        unlet g:syntastic_d_dmdcov_root
+        let g:syntastic_d_dmdcov_external_configure = 0
     endtry
 endfunction
